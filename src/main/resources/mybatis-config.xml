@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <properties resource="dbconfig.properties"/>
+
+    <settings>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <!-- <typeAlias type="com.liuwei.mybatis.entity.User" alias="UserMapper" />-->
+        <package name="com.liuwei.mybatis.entity"/>
+    </typeAliases>
+
+    <plugins>
+        <!-- <plugin interceptor="com.liuwei.mybatis.plugins.MyPlugin">
+             <property name="user" value="root"/>
+         </plugin>-->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- config params as the following -->
+            <property name="supportMethodsArguments" value="true"/>
+            <property name="params" value="pageNum=pageNumKey;pageSize=pageSizeKey;"/>
+        </plugin>
+    </plugins>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.drive}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="userMapper.xml"/>
+        <mapper class="com.liuwei.mybatis.dao.UserDao"/>
+        <mapper resource="userSexMapper.xml"/>
+        <mapper resource="userDynamicMapper.xml"/>
+        <mapper resource="mybatis\mapper\UserSexGeneratorMapper.xml"/>
+
+        <!-- <package name="com.liuwei.mybatis.dao"/>-->
+    </mappers>
+</configuration>

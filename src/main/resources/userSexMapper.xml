@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuwei.mybatis.dao.UserSexDao">
+
+    <resultMap id="myUserSex" type="userSex">
+        <id column="id" property="id"/>
+        <result column="sex" property="sex"/>
+
+        <collection property="userList" ofType="user">
+            <result column="name" property="name"/>
+            <result column="age" property="age"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="myUserSexStep" type="userSex">
+        <id column="id" property="id"/>
+        <result column="sex" property="sex"/>
+
+        <collection property="userList" select="com.liuwei.mybatis.dao.UserDao2.getUserList" column="{sex_id=id}"
+                    fetchType="lazy">
+
+        </collection>
+    </resultMap>
+
+    <select id="getUserSex" resultType="userSex">
+        select id,sex from user_sex where id=#{id}
+    </select>
+
+    <select id="getUserSexPlus" resultMap="myUserSex">
+        SELECT s.id id,s.sex sex,u.`name` name,u.age age from user_sex s LEFT JOIN `user` u on s.id=u.sex_id where s.id=#{id}
+    </select>
+
+    <select id="getUserSexStep" resultMap="myUserSexStep">
+        select id,sex from user_sex where id=#{id}
+    </select>
+</mapper>

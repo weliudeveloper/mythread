@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuwei.mybatis.dao.UserDynamicSqlDao">
+    <cache></cache>
+
+    <resultMap id="myUser" type="user">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+
+        <association property="userSex" select="com.liuwei.mybatis.dao.UserSexDao.getUserSex" column="sex_id">
+
+        </association>
+    </resultMap>
+
+    <!-- <select id="getList" resultMap="myUser">
+         select id,name,age,sex_id from user
+         <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
+             <if test=" userId !='' and userId != null">
+                 and id=#{userId} and
+             </if>
+             <if test=" name !='' and name != null">
+                 name=#{name} and
+             </if>
+         </trim>
+     </select>-->
+
+    <select id="getListByIds" resultMap="myUser">
+        select id,name,age,sex_id from user
+        <where>
+            id in
+            <foreach collection="ids" item="ids" separator="," open="(" close=")">
+                #{ids}
+            </foreach>
+        </where>
+
+    </select>
+
+    <select id="getList" resultMap="myUser">
+        <bind name="_name" value="'%'+name+'%'"/>
+        select <include refid="selectOne"></include> from user
+        <choose>
+            <when test="userId !=''">
+                <trim prefix="where">
+                    id=#{userId}
+                </trim>
+            </when>
+            <otherwise>
+                <trim prefix="where">
+                    name like #{_name}
+                </trim>
+            </otherwise>
+        </choose>
+    </select>
+
+    <update id="updateUser">
+        update user
+        <set>
+            <if test="_parameter != null">
+                <if test="user.name != null">
+                    name=#{user.name},
+                </if>
+                <if test="user.age != null">
+                    age=#{user.age},
+                </if>
+                <if test="user.sexId != null">
+                    sex_id=#{user.sexId}
+                </if>
+            </if>
+        </set>
+        <where>
+            id=#{id}
+        </where>
+    </update>
+
+    <!-- Oracle批量插入的两种方式-->
+    <!--<insert id="addMore">
+        insert into user(name,age,sex_id)
+            select name,age,sex_id from(
+                <foreach collection="users" item="user" separator="union">
+                    select #{user.name} name,#{user.age} age,#{user.sexId} from dual;
+                </foreach>
+            )
+
+        <foreach collection="users" item="user" open="begin" close="end">
+            insert into user(name,age,sex_id) values(#{user.name} name,#{user.age} age,#{user.sexId});
+        </foreach>
+    </insert>-->
+
+    <sql id="selectOne">
+        name,age,sex_id
+    </sql>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuwei.mybatis.dao.UserDao2">
+
+    <resultMap id="myUser" type="user">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="userSex.sex"/>
+
+    </resultMap>
+
+    <resultMap id="myUser2" type="user">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <association property="userSex" select="com.liuwei.mybatis.dao.UserSexDao.getUserSex" column="sex_id">
+
+        </association>
+    </resultMap>
+
+    <select id="getStep" resultMap="myUser2">
+        select * from user where id = #{id}
+    </select>
+
+    <select id="getOne" resultType="user">
+        select id,name,age,sex_id as sexId from user where id = #{id} and name=#{name}
+    </select>
+
+    <select id="getMap" resultMap="myUser">
+        SELECT user.id id,user.name name,user.age age,user_sex.sex sex from user,user_sex where user.sex_id=user_sex.id and user.name like #{name}
+    </select>
+
+    <select id="getUserList" resultType="user">
+        select id,name,age,sex_id as sexId from user
+    </select>
+
+    <update id="updateOne" parameterType="com.liuwei.mybatis.entity.User">
+       update user set
+        name = #{name},
+        age = #{age},
+        sex_id = #{sexId}
+      where id = #{id}
+    </update>
+
+    <delete id="deleteOne">
+        delete from user where id = #{id}
+    </delete>
+
+    <insert id="addOne" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="com.liuwei.mybatis.entity.User">
+        insert into user (name,age,sex_id)
+        values (#{name},#{age},#{sexId})
+    </insert>
+</mapper>
