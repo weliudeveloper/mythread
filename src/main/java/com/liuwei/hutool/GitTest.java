@@ -11,5 +11,6 @@ public class GitTest {
         System.out.println("这是测试切换版本2");
         System.out.println("这是测试切换版本4");
         System.out.println("这是测试切换版本3");
+        System.out.println("这是测试切换版本3");
     }
 }
