@@ -35,6 +35,7 @@ public class Cat implements Comparable<Cat> {
         }
     }
 
+
     public static synchronized void run() {
         System.out.println("小猫咪在运动。。。");
         try {

@@ -1,6 +1,11 @@
 package com.liuwei.rabbitmq;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author wee
@@ -9,14 +14,18 @@ import com.rabbitmq.client.ConnectionFactory;
  */
 public class RabbitMQUtils {
 
-    public static ConnectionFactory getConnectionFactory() {
-        ConnectionFactory consumerFactory = new ConnectionFactory();
-        consumerFactory.setHost("127.0.0.1");
-        consumerFactory.setPort(5672);
-        consumerFactory.setVirtualHost("/wee");
-        consumerFactory.setUsername("wee");
-        consumerFactory.setPassword("123");
-        return consumerFactory;
+    public static Channel getChannel() throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("127.0.0.1");
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+        return channel;
+    }
+
+    public static ConnectionFactory getConnectionFactory() throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("127.0.0.1");
+        return factory;
     }
 
 
